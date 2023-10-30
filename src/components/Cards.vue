@@ -1,8 +1,12 @@
 <template>
 
   <div class="deal-container">
+    <div class="search-container">
+      <input v-model="searchQuery" type="text" placeholder="Procurar"/>
+    </div>
+    <div v-if="filteredDeals.length === 0" class="no-results">Nenhum resultado encontrado.</div>
       <div class="grid-container">
-        <div v-for="deal in deals" :key="deal.dealID" class="grid-item">
+        <div v-for="deal in filteredDeals" :key="deal.dealID" class="grid-item">
           <img :src="deal.thumb" :alt="deal.title" class="deal-image">
           <div class="title-container">
             <h2>{{ deal.title }}</h2>
@@ -26,7 +30,8 @@ export default {
   name: 'CardsPage',
   data() {
     return {
-      deals: []
+      deals: [],
+      searchQuery: ''
     };
   },
 
@@ -46,6 +51,18 @@ export default {
         console.error('Houve um problema com a sua solicitação: ', error);
       });
   },
+
+  computed: {
+  filteredDeals() {
+    if (this.searchQuery) {
+      return this.deals.filter(deal =>
+        deal.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    } else {
+      return this.deals;
+    }
+  }
+},
 
   methods: {
     formatPrice(price) {
@@ -149,7 +166,7 @@ h2 {
 }
 
 #sale-price {
-  font-size: 18px;
+  font-size: 18px;  padding: 0 20px;
   font-weight: 700;
   text-align: right;
   padding-right: 10px;
@@ -162,6 +179,38 @@ h2 {
   font-size: 18px;
   font-weight: 700;
   text-align: center;
+}
+
+.search-container {
+  display: flex;
+  width: 100%;
+  padding: 10px 0 30px 0;
+}
+
+input[type=text] {
+  width: 380px;
+  height: 50px;
+  font-size: 18px;
+  font-weight: 100;
+  color: #FFFFFF;
+  background-color: #0B1641;
+  background-image: url('../assets/searchicon.png');
+  background-position: 20px 15px;
+  background-repeat: no-repeat;
+  padding-left: 50px;
+  border: none;
+  border-radius: 8px;
+  box-shadow:  0px 4px 4px 0 #00000025;
+}
+
+.no-results {
+  text-align: center;
+  margin-top: 20px;
+  font-style: italic;
+}
+
+::placeholder {
+  color: #ffffff;
 }
 
 @media screen and (max-width: 768px) {
@@ -179,6 +228,15 @@ h2 {
   .grid-item {
     width: 340px;
     height: 251px;
+  }
+
+  .search-container {
+    padding: 12px 0 10px 10px;
+  }
+
+  input[type=text] {
+    width: 200px;
+    height: 50px;
   }
 }
 
