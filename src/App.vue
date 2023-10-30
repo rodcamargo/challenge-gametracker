@@ -3,6 +3,7 @@
 
     <NavBar/>
     <p id="page-title">Ofertas</p>
+    <Cards/>
     <Footer id="footer"/>
 
   </div>
@@ -11,14 +12,17 @@
 <script>
 import NavBar from './components/NavBar.vue'
 import Footer from './components/Footer.vue'
+import Cards from './components/Cards.vue'
 
 export default {
   name: 'App',
   components: {
     NavBar,
-    Footer
+    Footer,
+    Cards,
   }
 }
+
 </script>
 
 <style>
@@ -32,22 +36,35 @@ export default {
 }
 
 #app {
+  min-height: 100vh;
   background: linear-gradient(to bottom left, #C70160, #0B1641);
-  height: 100vh;
 }
 
 #page-title {
   font-family: 'Roboto', sans-serif;
   font-size: 36px;
   font-weight: 300;
-  padding: 30px 0 9px 130px;
   color: #FFFFFF;
 }
 
 #footer {
-  position: absolute;
   bottom: 0;
   width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  
+  #page-title {
+    padding: 30px 0 9px 0;
+    text-align: center;
+  }
+}
+
+@media screen and (min-width: 769px) {
+    
+  #page-title {
+    padding: 30px 0 9px 130px;
+  }
 }
 
 </style>
