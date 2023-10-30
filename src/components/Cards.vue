@@ -1,9 +1,23 @@
 <template>
 
-  <div class="deal-container">
+  <div class="inputs-container">
     <div class="search-container">
       <input v-model="searchQuery" type="text" placeholder="Procurar"/>
     </div>
+      <div class="order-container">
+        <p id="order-by">Ordenar por:</p>
+        <select v-model="sortBy">
+          <option value="" disabled selected>Selecione</option>
+          <option value="all">Todos</option>
+          <option value="savings">% de Desconto</option>
+          <option value="highestSalePrice">Maior Preço</option>
+          <option value="lowestSalePrice">Menor Preço</option>
+          <option value="title">Título</option>
+        </select>
+      </div>
+  </div>
+
+  <div class="deal-container">
     <div v-if="filteredDeals.length === 0" class="no-results">Nenhum resultado encontrado.</div>
       <div class="grid-container">
         <div v-for="deal in filteredDeals" :key="deal.dealID" class="grid-item">
@@ -13,7 +27,7 @@
           </div>
           <div class="details-container">
             <div id="details-btn">DETALHES</div>
-            <div id="price-container">
+            <div id="prices-container">
               <p id="normal-price">$ {{ formatPrice(deal.normalPrice) }}</p>
               <p id="sale-price">$ {{ formatPrice(deal.salePrice) }}</p>
             </div>
@@ -28,10 +42,13 @@
 <script>
 export default {
   name: 'CardsPage',
+  
   data() {
     return {
       deals: [],
-      searchQuery: ''
+      originalDeals: [],
+      searchQuery: '',
+      sortBy: ''
     };
   },
 
@@ -46,6 +63,7 @@ export default {
       .then(data => {
         console.log(data);
         this.deals = data;
+        this.originalDeals = [...data];
       })
       .catch(error => {
         console.error('Houve um problema com a sua solicitação: ', error);
@@ -53,18 +71,31 @@ export default {
   },
 
   computed: {
+
   filteredDeals() {
-    if (this.searchQuery) {
-      return this.deals.filter(deal =>
-        deal.title.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    } else {
-      return this.deals;
+    let filtered = this.deals;
+
+      if (this.searchQuery) {
+        filtered = filtered.filter(deal =>
+          deal.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      } if (this.sortBy === 'savings') {
+          filtered.sort((a, b) => b.savings - a.savings);
+      } if (this.sortBy === 'highestSalePrice') {
+          filtered.sort((a, b) => b.salePrice - a.salePrice);
+      } if (this.sortBy === 'lowestSalePrice') {
+          filtered.sort((a, b) => a.salePrice - b.salePrice);
+      } if (this.sortBy === 'title') {
+          filtered.sort((a, b) => a.title.localeCompare(b.title));
+      } if (this.sortBy === 'all') {
+          return this.originalDeals;
+      }
+        return filtered;
     }
-  }
-},
+  },
 
   methods: {
+
     formatPrice(price) {
       return price.toString().replace('.', ',')
     },
@@ -77,8 +108,10 @@ export default {
       return (`-${ discount }%`);
     },
 
-  }
-
+    resetSort() {
+      this.deals = [...this.originalDeals];
+    },
+  },
 }
 
 </script>
@@ -88,6 +121,7 @@ export default {
 * {
   box-sizing: border-box;
   margin: 0;
+  padding: 0;
   font-family: 'Roboto', sans-serif;
   color: #FFFFFF;
 }
@@ -166,7 +200,8 @@ h2 {
 }
 
 #sale-price {
-  font-size: 18px;  padding: 0 20px;
+  font-size: 18px;  
+  padding: 0 20px;
   font-weight: 700;
   text-align: right;
   padding-right: 10px;
@@ -181,10 +216,17 @@ h2 {
   text-align: center;
 }
 
+.inputs-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0 20px 130px;
+  max-width: 1180px;
+}
+
 .search-container {
   display: flex;
-  width: 100%;
-  padding: 10px 0 30px 0;
+  align-items: center;
 }
 
 input[type=text] {
@@ -195,9 +237,9 @@ input[type=text] {
   color: #FFFFFF;
   background-color: #0B1641;
   background-image: url('../assets/searchicon.png');
-  background-position: 20px 15px;
+  background-position: 22px 16px;
   background-repeat: no-repeat;
-  padding-left: 50px;
+  padding-left: 60px;
   border: none;
   border-radius: 8px;
   box-shadow:  0px 4px 4px 0 #00000025;
@@ -213,11 +255,60 @@ input[type=text] {
   color: #ffffff;
 }
 
+.order-container {
+  display: flex;
+  align-items: center;
+}
+
+select {
+  width: 180px;
+  height: 50px;
+  font-size: 18px;
+  font-weight: 100;
+  background-color: #0B1641;
+  background-image: url('../assets/expandmore.png');
+  background-position: 150px 22px;
+  background-repeat: no-repeat;
+  padding: 0 20px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0px 4px 4px 0 #00000025;
+  cursor: pointer;
+  appearance: none;
+}
+
+select option {
+  font-size: 18px;
+}
+
 @media screen and (max-width: 768px) {
+
+  .inputs-container {
+    display: flex;
+    align-items: flex-end;
+    margin: 0;
+  }
+
+  #order-by {
+    font-size: 12px;
+  }
+
+  .order-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-right: 10px ;
+  }
+
+  select {
+    width: 140px;
+    padding-left: 20px;
+    background-position: 116px 22px;
+  }
 
   .deal-container {
     max-width: 100%;
-}
+  }
 
   .grid-container {
     display: grid;
@@ -231,11 +322,11 @@ input[type=text] {
   }
 
   .search-container {
-    padding: 12px 0 10px 10px;
+    padding: 12px 10px 0px 10px;
   }
 
   input[type=text] {
-    width: 200px;
+    width: 190px;
     height: 50px;
   }
 }
@@ -244,6 +335,12 @@ input[type=text] {
     
  .deal-container {
     padding: 9px 0 9px 130px;
+  }
+
+  #order-by {
+    font-size: 18px;
+    font-weight: 700;
+    padding-right: 10px;
   }
 }
 
