@@ -48,13 +48,13 @@ export default {
 }
 
 #footer {
-  bottom: 0;
   width: 100%;
 }
 
 @media screen and (max-width: 768px) {
   
   #page-title {
+    font-size: 24px;
     padding: 30px 0 9px 0;
     text-align: center;
   }

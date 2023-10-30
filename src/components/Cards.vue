@@ -4,13 +4,17 @@
       <div class="grid-container">
         <div v-for="deal in deals" :key="deal.dealID" class="grid-item">
           <img :src="deal.thumb" :alt="deal.title" class="deal-image">
-          <h2>{{ deal.title }}</h2>
-          <div id="details">DETALHES</div>
-          <div id="price-container">
-            <p id="normal-price">$ {{ formatPrice(deal.normalPrice) }}</p>
-            <p id="sale-price">$ {{ formatPrice(deal.salePrice) }}</p>
+          <div class="title-container">
+            <h2>{{ deal.title }}</h2>
           </div>
-          <p id="discount"> {{calculateDiscount(deal.savings)}}</p>
+          <div class="details-container">
+            <div id="details-btn">DETALHES</div>
+            <div id="price-container">
+              <p id="normal-price">$ {{ formatPrice(deal.normalPrice) }}</p>
+              <p id="sale-price">$ {{ formatPrice(deal.salePrice) }}</p>
+            </div>
+            <p id="discount"> {{calculateDiscount(deal.savings)}}</p>
+          </div>
         </div>
       </div>
   </div>
@@ -55,6 +59,7 @@ export default {
       }  
       return (`-${ discount }%`);
     },
+
   }
 
 }
@@ -66,7 +71,22 @@ export default {
 * {
   box-sizing: border-box;
   margin: 0;
+  font-family: 'Roboto', sans-serif;
   color: #FFFFFF;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 300;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title-container {
+  display: inline;
+  width: 100%;
+  padding: 9px 16px 0 16px;
 }
 
 .deal-container {
@@ -81,6 +101,7 @@ export default {
   grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
   margin-bottom: 20px;
+  padding-left: 130px;
 }
 
 .grid-item {
@@ -90,6 +111,8 @@ export default {
   background-color: #0B1641;
   border-radius: 5px;
   box-shadow:  0px 4px 4px 0 #00000025;
+  width: 380px;
+  height: 251px;
 }
 
 .deal-image {
@@ -99,12 +122,63 @@ export default {
   border-radius: 5px;
 }
 
+.details-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  width: 100%;
+  padding: 16px;
+  
+}
+
+#details-btn {
+  background-color: #C70160;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+
+#normal-price {
+  font-size: 12px;
+  font-weight: 100;
+  text-decoration: line-through;
+  text-align: right;
+  padding-right: 10px;
+}
+
+#sale-price {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: right;
+  padding-right: 10px;
+}
+
+#discount {
+  background-color: #16857B;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+
 @media screen and (max-width: 768px) {
+
+  .deal-container {
+    max-width: 100%;
+}
 
   .grid-container {
     display: grid;
     grid-template-columns: 1fr;
     padding: 20px;
+  }
+
+  .grid-item {
+    width: 340px;
+    height: 251px;
   }
 }
 

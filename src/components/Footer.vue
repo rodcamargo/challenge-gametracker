@@ -36,6 +36,9 @@ export default {
 
 a {
   text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
   color: #FFFFFF;
 }
 
