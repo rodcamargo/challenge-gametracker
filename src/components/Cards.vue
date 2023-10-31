@@ -25,7 +25,7 @@
             <h2>{{ deal.title }}</h2>
           </div>
           <div class="details-container">
-            <div id="details-btn">DETALHES</div>
+            <a :href="`https://www.metacritic.com${deal.metacriticLink}`" id="details-btn">DETALHES</a>
             <div id="prices-container">
               <p id="normal-price">$ {{ formatPrice(deal.normalPrice) }}</p>
               <p id="sale-price">$ {{ formatPrice(deal.salePrice) }}</p>
@@ -109,6 +109,7 @@ export default {
         .then(data => {
           this.deals = [...this.deals, ...data];
           this.pageNumber += 1;
+          console.log(data)
         })
         .catch(error => {
           console.error('Houve um problema com a sua solicitação: ', error);
