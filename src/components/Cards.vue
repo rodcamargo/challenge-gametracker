@@ -8,7 +8,6 @@
         <p id="order-by">Ordenar por:</p>
         <select v-model="sortBy">
           <option value="" disabled selected>Selecione</option>
-          <option value="all">Todos</option>
           <option value="savings">% de Desconto</option>
           <option value="highestSalePrice">Maior Preço</option>
           <option value="lowestSalePrice">Menor Preço</option>
@@ -35,7 +34,12 @@
           </div>
         </div>
       </div>
-  </div>
+    </div>
+    <div class="container-btn">
+      <button @click="loadMore" class="load-more-btn">
+        Carregar mais
+      </button>
+    </div>
 
 </template>
 
@@ -46,28 +50,14 @@ export default {
   data() {
     return {
       deals: [],
-      originalDeals: [],
       searchQuery: '',
-      sortBy: ''
+      sortBy: '',
+      pageNumber: 0,
     };
   },
 
   created() {
-    fetch('https://www.cheapshark.com/api/1.0/deals?pageNumber=0&pageSize=12&storeID=1&onSale=1&AAA=1')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Erro ao receber a resposta da rede.');
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log(data);
-        this.deals = data;
-        this.originalDeals = [...data];
-      })
-      .catch(error => {
-        console.error('Houve um problema com a sua solicitação: ', error);
-      });
+    this.fetchDeals();
   },
 
   computed: {
@@ -87,8 +77,6 @@ export default {
           filtered.sort((a, b) => a.salePrice - b.salePrice);
       } if (this.sortBy === 'title') {
           filtered.sort((a, b) => a.title.localeCompare(b.title));
-      } if (this.sortBy === 'all') {
-          return this.originalDeals;
       }
         return filtered;
     }
@@ -108,8 +96,27 @@ export default {
       return (`-${ discount }%`);
     },
 
-    resetSort() {
-      this.deals = [...this.originalDeals];
+    fetchDeals() {
+      const url = `https://www.cheapshark.com/api/1.0/deals?pageNumber=${this.pageNumber}&pageSize=12&storeID=1&onSale=1&AAA=1`;
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Erro ao receber a resposta da rede.');
+          }
+          return response.json();
+        })
+        .then(data => {
+          this.deals = [...this.deals, ...data];
+          this.pageNumber += 1;
+        })
+        .catch(error => {
+          console.error('Houve um problema com a sua solicitação: ', error);
+        });
+    },
+
+    loadMore() {
+      this.fetchDeals();
     },
   },
 }
@@ -281,7 +288,31 @@ select option {
   font-size: 18px;
 }
 
+.container-btn {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0 40px 130px;
+  max-width: 1180px;
+}
+
+.load-more-btn {
+  width: 380px;
+  height: 50px;
+  font-size: 18px;
+  font-weight: 100;
+  background-color: #0B1641;
+  border-radius: 8px;
+  box-shadow: 0px 4px 4px 0 #00000025;
+  cursor: pointer;
+  border: none;
+}
+
 @media screen and (max-width: 768px) {
+
+  .container-btn  {
+    display: flex;
+    margin: 0 10px 40px 10px;
+  }
 
   .inputs-container {
     display: flex;
@@ -291,6 +322,7 @@ select option {
 
   #order-by {
     font-size: 12px;
+    padding: 5px;
   }
 
   .order-container {
@@ -318,7 +350,7 @@ select option {
 
   .grid-item {
     width: 340px;
-    height: 251px;
+    height: 241px;
   }
 
   .search-container {
