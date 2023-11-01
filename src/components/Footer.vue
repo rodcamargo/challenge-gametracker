@@ -71,6 +71,7 @@ a {
     align-content: center;
     text-align: center;
     padding: 0 10px;
+    height: 540px;
   }
 
   #links {
