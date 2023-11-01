@@ -15,9 +15,14 @@
         </select>
       </div>
   </div>
-
+  <div
+    v-if="filteredDeals.length === 0 && this.searchQuery !==''"
+    class="no-results"
+  >
+  Nenhum resultado encontrado.
+  </div>
   <div class="deal-container">
-    <div v-if="filteredDeals.length === 0" class="no-results">Nenhum resultado encontrado.</div>
+    <Loader v-if="isLoading"/>
       <div class="grid-container">
         <div v-for="deal in filteredDeals" :key="deal.dealID" class="grid-item">
           <img :src="deal.thumb" :alt="deal.title" class="deal-image">
@@ -44,8 +49,14 @@
 </template>
 
 <script>
+import Loader from './Loader.vue';
+
 export default {
   name: 'CardsPage',
+
+  components: {
+    Loader,
+  },
 
   data() {
     return {
@@ -53,6 +64,7 @@ export default {
       searchQuery: '',
       sortBy: '',
       pageNumber: 0,
+      isLoading: true,
     };
   },
 
@@ -111,6 +123,9 @@ export default {
         })
         .catch((error) => {
           console.error('Houve um problema com a sua solicitação: ', error);
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
     },
 
@@ -253,8 +268,9 @@ input[type=text] {
 
 .no-results {
   text-align: center;
-  margin-top: 20px;
   font-style: italic;
+  margin-top: 20px;
+  max-width: 1440px;
 }
 
 ::placeholder {
@@ -304,6 +320,11 @@ select option {
   box-shadow: 0px 4px 4px 0 #00000025;
   cursor: pointer;
   border: none;
+}
+
+.loader {
+  display: flex;
+  align-items: center;
 }
 
 @media screen and (max-width: 768px) {
