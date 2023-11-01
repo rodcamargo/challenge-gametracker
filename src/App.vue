@@ -4,24 +4,24 @@
     <NavBar/>
     <p id="page-title">Ofertas</p>
     <Cards/>
-    <Footer id="footer"/>
+    <FooterPage id="footer"/>
 
   </div>
 </template>
 
 <script>
-import NavBar from './components/NavBar.vue'
-import Footer from './components/Footer.vue'
-import Cards from './components/Cards.vue'
+import NavBar from './components/NavBar.vue';
+import FooterPage from './components/Footer.vue';
+import Cards from './components/Cards.vue';
 
 export default {
   name: 'App',
   components: {
     NavBar,
-    Footer,
+    FooterPage,
     Cards,
-  }
-}
+  },
+};
 
 </script>
 
@@ -52,7 +52,7 @@ export default {
 }
 
 @media screen and (max-width: 768px) {
-  
+
   #page-title {
     font-size: 24px;
     padding: 30px 0 9px 0;
@@ -61,7 +61,7 @@ export default {
 }
 
 @media screen and (min-width: 769px) {
-    
+
   #page-title {
     padding: 30px 0 9px 130px;
   }

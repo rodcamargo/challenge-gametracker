@@ -46,7 +46,7 @@
 <script>
 export default {
   name: 'CardsPage',
-  
+
   data() {
     return {
       deals: [],
@@ -62,56 +62,54 @@ export default {
 
   computed: {
 
-  filteredDeals() {
-    let filtered = this.deals;
+    filteredDeals() {
+      let filtered = this.deals;
 
       if (this.searchQuery) {
-        filtered = filtered.filter(deal =>
-          deal.title.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
+        filtered = filtered
+          .filter((deal) => deal.title.toLowerCase().includes(this.searchQuery.toLowerCase()));
       } if (this.sortBy === 'savings') {
-          filtered.sort((a, b) => b.savings - a.savings);
+        filtered.sort((a, b) => b.savings - a.savings);
       } if (this.sortBy === 'highestSalePrice') {
-          filtered.sort((a, b) => b.salePrice - a.salePrice);
+        filtered.sort((a, b) => b.salePrice - a.salePrice);
       } if (this.sortBy === 'lowestSalePrice') {
-          filtered.sort((a, b) => a.salePrice - b.salePrice);
+        filtered.sort((a, b) => a.salePrice - b.salePrice);
       } if (this.sortBy === 'title') {
-          filtered.sort((a, b) => a.title.localeCompare(b.title));
+        filtered.sort((a, b) => a.title.localeCompare(b.title));
       }
-        return filtered;
-    }
+      return filtered;
+    },
   },
 
   methods: {
 
     formatPrice(price) {
-      return price.toString().replace('.', ',')
+      return price.toString().replace('.', ',');
     },
 
     calculateDiscount(savings) {
       const discount = Math.round(savings);
       if (discount === 100) {
-        return "Grátis";
-      }  
-      return (`-${ discount }%`);
+        return 'Grátis';
+      }
+      return (`-${discount}%`);
     },
 
     fetchDeals() {
       const url = `https://www.cheapshark.com/api/1.0/deals?pageNumber=${this.pageNumber}&pageSize=12&storeID=1&onSale=1&AAA=1`;
 
       fetch(url)
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
             throw new Error('Erro ao receber a resposta da rede.');
           }
           return response.json();
         })
-        .then(data => {
+        .then((data) => {
           this.deals = [...this.deals, ...data];
           this.pageNumber += 1;
-          console.log(data)
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Houve um problema com a sua solicitação: ', error);
         });
     },
@@ -120,7 +118,7 @@ export default {
       this.fetchDeals();
     },
   },
-}
+};
 
 </script>
 
@@ -187,7 +185,7 @@ h2 {
   align-items: center;
   width: 100%;
   padding: 16px;
-  
+
 }
 
 #details-btn {
@@ -208,7 +206,7 @@ h2 {
 }
 
 #sale-price {
-  font-size: 18px;  
+  font-size: 18px;
   padding: 0 20px;
   font-weight: 700;
   text-align: right;
@@ -365,7 +363,7 @@ select option {
 }
 
 @media screen and (min-width: 769px) {
-    
+
  .deal-container {
     padding: 9px 0 9px 130px;
   }
