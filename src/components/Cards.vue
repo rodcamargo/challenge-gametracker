@@ -1,51 +1,46 @@
 <template>
-
   <div class="inputs-container">
     <div class="search-container">
-      <input v-model="searchQuery" type="text" placeholder="Procurar"/>
+      <input v-model="searchQuery" type="text" placeholder="Procurar" />
     </div>
-      <div class="order-container">
-        <p id="order-by">Ordenar por:</p>
-        <select v-model="sortBy">
-          <option value="" disabled selected>Selecione</option>
-          <option value="savings">% de Desconto</option>
-          <option value="highestSalePrice">Maior Preço</option>
-          <option value="lowestSalePrice">Menor Preço</option>
-          <option value="title">Título</option>
-        </select>
-      </div>
+    <div class="order-container">
+      <p id="order-by">Ordenar por:</p>
+      <select v-model="sortBy">
+        <option value="" disabled selected>Selecione</option>
+        <option value="savings">% de Desconto</option>
+        <option value="highestSalePrice">Maior Preço</option>
+        <option value="lowestSalePrice">Menor Preço</option>
+        <option value="title">Título</option>
+      </select>
+    </div>
   </div>
-  <div
-    v-if="filteredDeals.length === 0 && this.searchQuery !==''"
-    class="no-results"
-  >
-  Nenhum resultado encontrado.
+  <div v-if="filteredDeals.length === 0 && this.searchQuery !== ''" class="no-results">
+    Nenhum resultado encontrado.
   </div>
   <div class="deal-container">
-    <Loader v-if="isLoading"/>
-      <div class="grid-container">
-        <div v-for="deal in filteredDeals" :key="deal.dealID" class="grid-item">
-          <img :src="deal.thumb" :alt="deal.title" class="deal-image">
-          <div class="title-container">
-            <h2>{{ deal.title }}</h2>
+    <Loader v-if="isLoading" />
+    <div class="grid-container">
+      <div v-for="deal in filteredDeals" :key="deal.dealID" class="grid-item">
+        <img :src="deal.thumb" :alt="deal.title" class="deal-image">
+        <div class="title-container">
+          <h2>{{ deal.title }}</h2>
+        </div>
+        <div class="details-container">
+          <a :href="`https://www.metacritic.com${deal.metacriticLink}`" id="details-btn">DETALHES</a>
+          <div id="prices-container">
+            <p id="normal-price">$ {{ formatPrice(deal.normalPrice) }}</p>
+            <p id="sale-price">$ {{ formatPrice(deal.salePrice) }}</p>
           </div>
-          <div class="details-container">
-            <a :href="`https://www.metacritic.com${deal.metacriticLink}`" id="details-btn">DETALHES</a>
-            <div id="prices-container">
-              <p id="normal-price">$ {{ formatPrice(deal.normalPrice) }}</p>
-              <p id="sale-price">$ {{ formatPrice(deal.salePrice) }}</p>
-            </div>
-            <p id="discount"> {{calculateDiscount(deal.savings)}}</p>
-          </div>
+          <p id="discount"> {{ calculateDiscount(deal.savings) }}</p>
         </div>
       </div>
     </div>
-    <div class="container-btn">
-      <button @click="loadMore" class="load-more-btn">
-        Carregar mais
-      </button>
-    </div>
-
+  </div>
+  <div class="container-btn">
+    <button @click="loadMore" class="load-more-btn">
+      Carregar mais
+    </button>
+  </div>
 </template>
 
 <script>
@@ -118,7 +113,11 @@ export default {
           return response.json();
         })
         .then((data) => {
-          this.deals = [...this.deals, ...data];
+          data.forEach((item) => {
+            if (!this.deals.some((deal) => deal.dealID === item.dealID)) {
+              this.deals.push(item);
+            }
+          });
           this.pageNumber += 1;
         })
         .catch((error) => {
@@ -138,7 +137,6 @@ export default {
 </script>
 
 <style>
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -182,7 +180,7 @@ h2 {
   align-items: center;
   background-color: #0B1641;
   border-radius: 5px;
-  box-shadow:  0px 4px 4px 0 #00000025;
+  box-shadow: 0px 4px 4px 0 #00000025;
   width: 380px;
   height: 251px;
 }
@@ -263,7 +261,7 @@ input[type=text] {
   padding-left: 60px;
   border: none;
   border-radius: 8px;
-  box-shadow:  0px 4px 4px 0 #00000025;
+  box-shadow: 0px 4px 4px 0 #00000025;
 }
 
 .no-results {
@@ -329,7 +327,7 @@ select option {
 
 @media screen and (max-width: 768px) {
 
-  .container-btn  {
+  .container-btn {
     display: flex;
     margin: 0 10px 40px 10px;
   }
@@ -349,7 +347,7 @@ select option {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-right: 10px ;
+    padding-right: 10px;
   }
 
   select {
@@ -385,7 +383,7 @@ select option {
 
 @media screen and (min-width: 769px) {
 
- .deal-container {
+  .deal-container {
     padding: 9px 0 9px 130px;
   }
 
@@ -395,5 +393,4 @@ select option {
     padding-right: 10px;
   }
 }
-
 </style>
